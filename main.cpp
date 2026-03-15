@@ -4,6 +4,42 @@
 // This also works if you do not want `include/`, but some editors might not like it
 // #include "Example.h"
 
+class Resursa {
+//reprezinta materialele brute: apa, seminte, sol
+private:
+    std::string nume;
+    int cantitate;
+
+public:
+    //constructor explicit de initializare
+    explicit Resursa(const std::string &nume_ = "Necunoscut", int cantitate_ = 0)
+        : nume{nume_}, cantitate{cantitate_}{
+    std::cout<< "Constructor de initializare Resursa\n";
+}
+    //doar citim datele, nu sunt modificate
+    const std::string& getNume() const {return nume;}
+    int getCantitate() const {return cantitate;}
+
+    //modificarea cantitatii pe parcursul jocului
+    void adauga(int suma) {cantitate += suma;}
+    bool consuma(int suma) {
+        if (cantitate >= suma) {
+            cantitate -= suma;
+            return true;
+        }
+        return false;
+    }
+    //operator pentru afisare
+    friend std::ostream& operator<<(std::ostream& os, const Resursa &r) {
+        os << r.cantitate << "x " <<r.nume << "\n";
+        return os;
+    }
+
+};
+
+
+
+};
 int main() {
     std::cout << "Commit";
     Example e1;
