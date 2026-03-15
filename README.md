@@ -1,4 +1,11 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+
+# ArborQuest
+
+Aplicația este un simulator ecologic bazat pe răspunsuri corecte. Aceasta funcționează pe următorul flux:  
+-Utilizatorul joaca runde de trivia  
+-La fiecare raspuns corect, acesta primeste resurse brute(apa, seminte, sol)  
+-Cand castiga destule resurse, acesta le consuma(crafting) pentru a planta diferiti copaci  
+-Scopul jocului este de a construi o padure cat mai mare, gestionand corect resursele castigate.  
 
 ### Folosiți template-ul corespunzător grupei voastre!
 
