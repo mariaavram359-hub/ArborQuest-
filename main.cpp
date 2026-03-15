@@ -4,49 +4,54 @@
 // This also works if you do not want `include/`, but some editors might not like it
 // #include "Example.h"
 
-class Resursa {
-//reprezinta materialele brute: apa, seminte, sol
+class Autor{
 private:
     std::string nume;
-    int cantitate;
+    int anNastere;
 
 public:
-    //constructor explicit de initializare
-    explicit Resursa(const std::string &nume_ = "Necunoscut", int cantitate_ = 0)
-        : nume{nume_}, cantitate{cantitate_}{
-    std::cout<< "Constructor de initializare Resursa\n";
-}
-    //doar citim datele, nu sunt modificate
-    const std::string& getNume() const {return nume;}
-    int getCantitate() const {return cantitate;}
-
-    //modificarea cantitatii pe parcursul jocului
-    void adauga(int suma) {cantitate += suma;}
-    bool consuma(int suma) {
-        if (cantitate >= suma) {
-            cantitate -= suma;
-            return true;
-        }
-        return false;
+    //constructor initializare cu parametri
+    explicit Autor(const std::string& nume_ = "Anonim", int anNastere_ = 0)
+        : nume{nume_}, anNastere{anNastere_} {
+        std::cout << "Constrcutor de intializare Autor (" << nume <<") \n";
     }
-    //operator pentru afisare
-    friend std::ostream& operator<<(std::ostream& os, const Resursa &r) {
-        os << r.cantitate << "x " <<r.nume << "\n";
+    //getters(functii const pt a citi datele)
+    const std::string& getNume() const {return nume; }
+    int getAnNastere() const {return anNastere; }
+
+    //supraincarcare operator de afisare
+    friend std::ostream& operator<<(std:: ostream& os, const Autor& a) {
+        os << a.nume << " (an. " << a.anNastere << ")";
         return os;
     }
 
 };
 
-
-
-};
 int main() {
-    std::cout << "Commit";
-    Example e1;
-    e1.g();
-    std::array<int, 100> v{};
-    int nr;
-    std::cout << "Introduceți nr: ";
+
+    std::cout << "test clasa autor\n";
+
+    //test constructor initializare cu parametri
+    Autor autor1{"Mihai Eminescu", 1850};
+
+    //test constructor cu parametri impliciti
+    Autor autorNecunoscut;
+
+    std::cout << "test opertor<<\n";
+    std::cout << "Autor1: " << autor1 << "\n";
+    std::cout << "Autor2: " << autorNecunoscut << "\n";
+
+    std::cout << "test getters\n";
+    std::cout << "Numele primului autor " << autor1.getNume() << "\n";
+    std::cout << "Anul de nastere al primului autor " << autor1.getAnNastere() << "\n";
+
+
+    // std::cout << "Commit";
+    // Example e1;
+    // e1.g();
+    // std::array<int, 100> v{};
+    // int nr;
+    // std::cout << "Introduceți nr: ";
     /////////////////////////////////////////////////////////////////////////
     /// Observație: dacă aveți nevoie să citiți date de intrare de la tastatură,
     /// dați exemple de date de intrare folosind fișierul tastatura.txt
@@ -67,17 +72,17 @@ int main() {
     /// program care merg (și să le evitați pe cele care nu merg).
     ///
     /////////////////////////////////////////////////////////////////////////
-    std::cin >> nr;
-    /////////////////////////////////////////////////////////////////////////
-    for(int i = 0; i < nr; ++i) {
-        std::cout << "v[" << i << "] = ";
-        std::cin >> v[i];
-    }
-    std::cout << "\n\n";
-    std::cout << "Am citit de la tastatură " << nr << " elemente:\n";
-    for(int i = 0; i < nr; ++i) {
-        std::cout << "- " << v[i] << "\n";
-    }
+    // std::cin >> nr;
+    // /////////////////////////////////////////////////////////////////////////
+    // for(int i = 0; i < nr; ++i) {
+    //     std::cout << "v[" << i << "] = ";
+    //     std::cin >> v[i];
+    // }
+    // std::cout << "\n\n";
+    // std::cout << "Am citit de la tastatură " << nr << " elemente:\n";
+    // for(int i = 0; i < nr; ++i) {
+    //     std::cout << "- " << v[i] << "\n";
+    // }
     ///////////////////////////////////////////////////////////////////////////
     /// Pentru date citite din fișier, NU folosiți tastatura.txt. Creați-vă voi
     /// alt fișier propriu cu ce alt nume doriți.
