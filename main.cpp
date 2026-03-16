@@ -48,7 +48,6 @@ int main() {
 
     // std::cout << "Commit";
     // Example e1;
-    // e1.g();
     // std::array<int, 100> v{};
     // int nr;
     // std::cout << "Introduceți nr: ";
