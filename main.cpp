@@ -27,6 +27,33 @@ public:
 
 };
 
+class Carte {
+    private:
+    std::string titlu;
+    Autor autor;
+    int stoc;
+    float pret;
+
+    public:
+    explicit Carte(const std::string& titlu_ = "Fara titlu",
+        const Autor& autor_ = Autor{},
+        float pret_ = 0.0f,
+        int stoc_ = 0)
+            :titlu{titlu_}, stoc{stoc_}, pret{pret_}, autor {autor_} {
+        std::cout << "Constrcutor de Carte (" << titlu << ") \n";
+    }
+    const std::string& getTitlu() const {return titlu; }
+    const Autor& getAutor() const {return autor; }
+    int getStoc() const {return stoc; }
+    float getPret() const {return pret; }
+
+    friend std::ostream& operator<<(std:: ostream& os, const Carte& c) {
+        os << "Cartea " << c.titlu << " scrisa de " << c.autor
+           << " | Pret: " << c.pret << " RON | Stoc: " << c.stoc << " buc.";
+        return os;
+    }
+};
+
 int main() {
 
     std::cout << "test clasa autor\n";
@@ -35,17 +62,21 @@ int main() {
     Autor autor1{"Mihai Eminescu", 1850};
 
     //test constructor cu parametri impliciti
-    Autor autorNecunoscut;
+    // Autor autorNecunoscut;
 
-    std::cout << "test opertor<<\n";
-    std::cout << "Autor1: " << autor1 << "\n";
-    std::cout << "Autor2: " << autorNecunoscut << "\n";
+    // std::cout << "test opertor<<\n";
+    // std::cout << "Autor1: " << autor1 << "\n";
+    // std::cout << "Autor2: " << autorNecunoscut << "\n";
+    //
+    // std::cout << "test getters\n";
+    // std::cout << "Numele primului autor " << autor1.getNume() << "\n";
+    // std::cout << "Anul de nastere al primului autor " << autor1.getAnNastere() << "\n";
 
-    std::cout << "test getters\n";
-    std::cout << "Numele primului autor " << autor1.getNume() << "\n";
-    std::cout << "Anul de nastere al primului autor " << autor1.getAnNastere() << "\n";
+    Carte carte1{"Poezii", autor1, 35.5f, 10};
+    Carte carte2{"Retete Traditionale", Autor{}, 50.0f, 5};
 
-
+    std::cout << "1. " << carte1 << "\n";
+    std::cout << "2. " << carte2 << "\n";
     // std::cout << "Commit";
     // Example e1;
     // std::array<int, 100> v{};
