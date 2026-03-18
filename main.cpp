@@ -57,14 +57,32 @@ class Carte {
 
 // class Librarie {
 //     private:
-//     std::string Librarie;
+//     std::string numeLibrarie;
 //     float buget;
-//     Carte* carte; //array de vcarti alocat dinamic
+//     Carte* carti; //array de carti alocat dinamic
 //     int nrcarti;
 //
-//     public:
-//     void AdaugaCarteinarray(const Carte& c)
+//     void AdaugaCarteinarray(const Carte& c) {
+//         Carte* temp = new Carte[nrcarti + 1];
+//         for (int i = 0; i < nrcarti; ++i) {
+//             temp[i] = carti[i];
+//         }
+//         temp[nrcarti] = c;
+//         delete[] carti;
+//         carti = temp;
+//         nrcarti++;
+//     }
+// public:
+//     explicit Librarie(const std::string& numeLibrarie_ = "No Name", float buget_ = 1000.0f)
+//         : numeLibrarie{numeLibrarie_}, buget{buget_}, carti {nullptr}, nrcarti {0} {
+//         std::cout << "Constructor de initializare Librarie (" << numeLibrarie << ")\n";
+//     }
+//
+//     ~Librarie() {
+//         delete[] carti;
+//     }
 // };
+
 int main() {
 
     std::cout << "test clasa autor\n";
@@ -73,21 +91,27 @@ int main() {
     Autor autor1{"Mihai Eminescu", 1850};
 
     //test constructor cu parametri impliciti
-    // Autor autorNecunoscut;
+     Autor autorNecunoscut;
 
-    // std::cout << "test opertor<<\n";
-    // std::cout << "Autor1: " << autor1 << "\n";
-    // std::cout << "Autor2: " << autorNecunoscut << "\n";
-    //
-    // std::cout << "test getters\n";
-    // std::cout << "Numele primului autor " << autor1.getNume() << "\n";
-    // std::cout << "Anul de nastere al primului autor " << autor1.getAnNastere() << "\n";
+     std::cout << "test opertor<<\n";
+     std::cout << "Autor1: " << autor1 << "\n";
+     std::cout << "Autor2: " << autorNecunoscut << "\n";
+
+    std::cout << "test getters\n";
+    std::cout << "Numele primului autor " << autor1.getNume() << "\n";
+    std::cout << "Anul de nastere al primului autor " << autor1.getAnNastere() << "\n";
 
     Carte carte1{"Poezii", autor1, 35.5f, 10};
     Carte carte2{"Retete Traditionale", Autor{}, 50.0f, 5};
 
     std::cout << "1. " << carte1 << "\n";
     std::cout << "2. " << carte2 << "\n";
+
+    std::cout << "test getters\n";
+    std::cout << "Numele primei carti " << carte1.getTitlu() << "\n";
+    std::cout << "Autorul primei carti " << carte1.getAutor() << "\n";
+    std::cout << "Pretul primei carti " << carte1.getPret() << "\n";
+    std::cout << "Stocul primei carti " << carte1.getStoc() << "\n";
     // std::cout << "Commit";
     // Example e1;
     // std::array<int, 100> v{};
