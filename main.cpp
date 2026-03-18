@@ -1,6 +1,7 @@
 #include <iostream>
-#include <array>
-#include "include/Example.h"
+// #include <array>
+// #include "include/Example.h"
+
 // This also works if you do not want `include/`, but some editors might not like it
 // #include "Example.h"
 
@@ -31,21 +32,21 @@ class Carte {
     private:
     std::string titlu;
     Autor autor;
-    int stoc;
     float pret;
+    int stoc;
 
     public:
     explicit Carte(const std::string& titlu_ = "Fara titlu",
         const Autor& autor_ = Autor{},
         float pret_ = 0.0f,
         int stoc_ = 0)
-            :titlu{titlu_}, stoc{stoc_}, pret{pret_}, autor {autor_} {
+            :titlu{titlu_}, autor {autor_}, pret{pret_}, stoc{stoc_}{
         std::cout << "Constrcutor de Carte (" << titlu << ") \n";
     }
     const std::string& getTitlu() const {return titlu; }
     const Autor& getAutor() const {return autor; }
-    int getStoc() const {return stoc; }
     float getPret() const {return pret; }
+    int getStoc() const {return stoc; }
 
     friend std::ostream& operator<<(std:: ostream& os, const Carte& c) {
         os << "Cartea " << c.titlu << " scrisa de " << c.autor
@@ -54,6 +55,16 @@ class Carte {
     }
 };
 
+// class Librarie {
+//     private:
+//     std::string Librarie;
+//     float buget;
+//     Carte* carte; //array de vcarti alocat dinamic
+//     int nrcarti;
+//
+//     public:
+//     void AdaugaCarteinarray(const Carte& c)
+// };
 int main() {
 
     std::cout << "test clasa autor\n";
