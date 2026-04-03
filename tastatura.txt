@@ -1,2 +1,17 @@
-5
-11 22 33 44 55
+Popescu Ion
+ion@email.com
+150.0
+2
+Harry Potter vol. 1
+Poezii
+Ionescu Maria
+maria@email.com
+20.0
+1
+Harry Potter vol. 2
+Gheorghe Vasile
+vasile@email.com
+500.0
+2
+Carte Inexistenta
+Poezii

@@ -1,9 +1,8 @@
 #include <iostream>
+#include <utility>
+// #include <vector>
 // #include <array>
 // #include "include/Example.h"
-
-// This also works if you do not want `include/`, but some editors might not like it
-// #include "Example.h"
 
 class Autor{
 private:
@@ -11,42 +10,52 @@ private:
     int anNastere;
 
 public:
-    //constructor initializare cu parametri
-    explicit Autor(const std::string& nume_ = "Anonim", int anNastere_ = 0)
-        : nume{nume_}, anNastere{anNastere_} {
-        std::cout << "Constrcutor de intializare Autor (" << nume <<") \n";
+    explicit Autor(std::string  nume_autor = "Anonim", int an_nastere_autor = 0)
+        : nume{std::move(nume_autor)}, anNastere{an_nastere_autor} {
+        // std::cout << "Constrcutor de intializare Autor (" << nume <<") \n";
     }
-    //getters(functii const pt a citi datele)
-    const std::string& getNume() const {return nume; }
-    int getAnNastere() const {return anNastere; }
 
-    //supraincarcare operator de afisare
+     const std::string& getNume() const {return nume; }
+     int getAnNastere() const {return anNastere; }
+
     friend std::ostream& operator<<(std:: ostream& os, const Autor& a) {
         os << a.nume << " (an. " << a.anNastere << ")";
         return os;
     }
-
 };
 
 class Carte {
-    private:
+private:
     std::string titlu;
     Autor autor;
     float pret;
     int stoc;
 
-    public:
-    explicit Carte(const std::string& titlu_ = "Fara titlu",
-        const Autor& autor_ = Autor{},
-        float pret_ = 0.0f,
-        int stoc_ = 0)
-            :titlu{titlu_}, autor {autor_}, pret{pret_}, stoc{stoc_}{
-        std::cout << "Constrcutor de Carte (" << titlu << ") \n";
+public:
+    explicit Carte(std::string  titlu_carte = "Fara titlu",
+        const Autor& autor_carte = Autor{},
+        float pret_carte = 0.0f,
+        int stoc_carte = 0)
+            :titlu{std::move(titlu_carte)}, autor {autor_carte}, pret{pret_carte}, stoc{stoc_carte}{
+        // std::cout << "Constrcutor de Carte (" << titlu << ") \n";
     }
+
+
     const std::string& getTitlu() const {return titlu; }
     const Autor& getAutor() const {return autor; }
     float getPret() const {return pret; }
     int getStoc() const {return stoc; }
+
+    void scadeStoc(int cantitate) {
+        if (stoc >= cantitate) {
+            stoc -= cantitate;
+        }
+    }
+
+    //aplicam reducere(pentru cand voi implementa logica de la reducerea in functie de autor)
+    void aplicaReducere(float procent) {
+        pret -= (pret * procent / 100.0f);
+    }
 
     friend std::ostream& operator<<(std:: ostream& os, const Carte& c) {
         os << "Cartea " << c.titlu << " scrisa de " << c.autor
@@ -55,107 +64,289 @@ class Carte {
     }
 };
 
-// class Librarie {
-//     private:
-//     std::string numeLibrarie;
-//     float buget;
-//     Carte* carti; //array de carti alocat dinamic
-//     int nrcarti;
-//
-//     void AdaugaCarteinarray(const Carte& c) {
-//         Carte* temp = new Carte[nrcarti + 1];
-//         for (int i = 0; i < nrcarti; ++i) {
-//             temp[i] = carti[i];
-//         }
-//         temp[nrcarti] = c;
-//         delete[] carti;
-//         carti = temp;
-//         nrcarti++;
-//     }
-// public:
-//     explicit Librarie(const std::string& numeLibrarie_ = "No Name", float buget_ = 1000.0f)
-//         : numeLibrarie{numeLibrarie_}, buget{buget_}, carti {nullptr}, nrcarti {0} {
-//         std::cout << "Constructor de initializare Librarie (" << numeLibrarie << ")\n";
-//     }
-//
-//     ~Librarie() {
-//         delete[] carti;
-//     }
-// };
+class Raft {
+private:
+    Carte carti[100];
+    int numarCarti;
 
-int main() {
+public:
+    explicit Raft() : numarCarti{0} {
 
-    std::cout << "test clasa autor\n";
+    }
 
-    //test constructor initializare cu parametri
-    Autor autor1{"Mihai Eminescu", 1850};
+    ~Raft() = default;
+    Raft(const Raft& alt_raft) : numarCarti{alt_raft.numarCarti} {
+        for (int i = 0; i < numarCarti; ++i) {
+            carti[i] = alt_raft.carti[i];
+        }
+    }
 
-    //test constructor cu parametri impliciti
-     Autor autorNecunoscut;
+    Raft& operator=(const Raft& alt_raft) {
+        if (this != &alt_raft) {
+            numarCarti = alt_raft.numarCarti;
+            for (int i = 0; i < numarCarti; ++i) {
+                carti[i] = alt_raft.carti[i];
+            }
+        }
+        return *this;
+    }
 
-     std::cout << "test opertor<<\n";
-     std::cout << "Autor1: " << autor1 << "\n";
-     std::cout << "Autor2: " << autorNecunoscut << "\n";
+    void adaugaCarte(const Carte& c) {
+        if (numarCarti < 100) {
+            carti[numarCarti] = c;
+            numarCarti++;
+        }
+        else {
+            std::cout << "Raftul este plin!";
+        }
+    }
 
-    std::cout << "test getters\n";
-    std::cout << "Numele primului autor " << autor1.getNume() << "\n";
-    std::cout << "Anul de nastere al primului autor " << autor1.getAnNastere() << "\n";
+    Carte* gasesteCarte(const std::string& titluCautat) {
+        for (int i = 0; i < numarCarti; ++i) {
+            if (carti[i].getTitlu() == titluCautat) {
+                return &carti[i];
+            }
+        }
+        return nullptr;
+    }
 
-    Carte carte1{"Poezii", autor1, 35.5f, 10};
-    Carte carte2{"Retete Traditionale", Autor{}, 50.0f, 5};
+    void aplicaReducereAutor(const std::string& numeAutor, float procent) {
+        for (int i = 0; i < numarCarti; ++i) {
+            if (carti[i].getAutor().getNume() == numeAutor) {
+                carti[i].aplicaReducere(procent);
+            }
+        }
+    }
 
-    std::cout << "1. " << carte1 << "\n";
-    std::cout << "2. " << carte2 << "\n";
+    float calculeazaValoare() const {
+        float total = 0.0f;
+        for (int i = 0; i < numarCarti; ++i) {
+            total += (carti[i].getPret() * carti[i].getStoc());
+        }
+        return total;
+    }
 
-    std::cout << "test getters\n";
-    std::cout << "Numele primei carti " << carte1.getTitlu() << "\n";
-    std::cout << "Autorul primei carti " << carte1.getAutor() << "\n";
-    std::cout << "Pretul primei carti " << carte1.getPret() << "\n";
-    std::cout << "Stocul primei carti " << carte1.getStoc() << "\n";
-    // std::cout << "Commit";
-    // Example e1;
-    // std::array<int, 100> v{};
-    // int nr;
-    // std::cout << "Introduceți nr: ";
-    /////////////////////////////////////////////////////////////////////////
-    /// Observație: dacă aveți nevoie să citiți date de intrare de la tastatură,
-    /// dați exemple de date de intrare folosind fișierul tastatura.txt
-    /// Trebuie să aveți în fișierul tastatura.txt suficiente date de intrare
-    /// (în formatul impus de voi) astfel încât execuția programului să se încheie.
-    /// De asemenea, trebuie să adăugați în acest fișier date de intrare
-    /// pentru cât mai multe ramuri de execuție.
-    /// Dorim să facem acest lucru pentru a automatiza testarea codului, fără să
-    /// mai pierdem timp de fiecare dată să introducem de la zero aceleași date de intrare.
-    ///
-    /// Pe GitHub Actions (bife), fișierul tastatura.txt este folosit
-    /// pentru a simula date introduse de la tastatură.
-    /// Bifele verifică dacă programul are erori de compilare, erori de memorie și memory leaks.
-    ///
-    /// Dacă nu puneți în tastatura.txt suficiente date de intrare, îmi rezerv dreptul să vă
-    /// testez codul cu ce date de intrare am chef și să nu pun notă dacă găsesc vreun bug.
-    /// Impun această cerință ca să învățați să faceți un demo și să arătați părțile din
-    /// program care merg (și să le evitați pe cele care nu merg).
-    ///
-    /////////////////////////////////////////////////////////////////////////
-    // std::cin >> nr;
-    // /////////////////////////////////////////////////////////////////////////
-    // for(int i = 0; i < nr; ++i) {
-    //     std::cout << "v[" << i << "] = ";
-    //     std::cin >> v[i];
-    // }
-    // std::cout << "\n\n";
-    // std::cout << "Am citit de la tastatură " << nr << " elemente:\n";
-    // for(int i = 0; i < nr; ++i) {
-    //     std::cout << "- " << v[i] << "\n";
-    // }
-    ///////////////////////////////////////////////////////////////////////////
-    /// Pentru date citite din fișier, NU folosiți tastatura.txt. Creați-vă voi
-    /// alt fișier propriu cu ce alt nume doriți.
-    /// Exemplu:
-    /// std::ifstream fis("date.txt");
-    /// for(int i = 0; i < nr2; ++i)
-    ///     fis >> v2[i];
-    ///
-    ///////////////////////////////////////////////////////////////////////////
+    friend std::ostream& operator<<(std::ostream& os, const Raft& r) {
+        if (r.numarCarti == 0) {
+            os << "Raftul este gol";
+        }
+        else {
+            for (int i = 0; i < r.numarCarti; ++i) {
+                os << " " << i + 1 <<". "<<r.carti[i] << "\n";
+            }
+        }
+        return os;
+    }
+};
+
+class Client {
+    private:
+    std::string nume;
+    std::string email;
+    float portofel;
+
+public:
+    explicit Client(const std::string& nume_client = "Necunoscut", std::string email_client = "-", float portofel_client = 0.0f) :
+    nume{nume_client}, email{std::move(email_client)}, portofel{portofel_client}{}
+
+    std::string getNume() const {return nume;}
+    float getPortofel() const {return portofel;}
+
+    void plateste(float suma) {
+        if (portofel > suma) {
+            portofel -= suma;
+        }
+    }
+
+    friend std::istream& operator>>(std::istream& is, Client& c) {
+        // std::cout<<"Introdu nume client: ";
+        std::getline(is >> std::ws, c.nume);
+        // std::cout<<"Introdu email: ";
+        is >> c.email;
+        // std::cout<<"Introdu buget client: ";
+        is >> c.portofel;
+        return is;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Client& c) {
+        os << c.nume << " " <<"(" << c.email <<") | Portofel: " << c.portofel << " Ron";
+        return os;
+    }
+
+};
+
+class Comanda{
+private:
+    Client client;
+    std::string titluriDorite[10];
+    int numarCartiDorite;
+
+public:
+    explicit Comanda(const Client &client_curent = Client{})
+        : client{client_curent}, numarCartiDorite{0} {}
+
+    Client& getClient() {return client;}
+    int getNumarCartiDorite() const {return numarCartiDorite;}
+    const std::string& getTitluDorit(int index) const {return titluriDorite[index];}
+
+    friend std::istream& operator>>(std::istream& is, Comanda& cmd) {
+        // std::cout <<"Numar carti dorite de client (Max 10): ";
+        is >> cmd.numarCartiDorite;
+
+        if (cmd.numarCartiDorite > 10) cmd.numarCartiDorite = 10;
+        if (cmd.numarCartiDorite < 0) cmd.numarCartiDorite = 0;
+
+        for (int i = 0; i < cmd.numarCartiDorite; ++i) {
+            // std::cout << i + 1 << " : ";
+            std::getline(is >> std::ws, cmd.titluriDorite[i]);
+        }
+        return is;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Comanda& cmd) {
+        os << "\n Bon Comanda \n";
+        os << cmd.client << "\n";
+        os << "Carti dorite (" << cmd.numarCartiDorite << "): \n";
+        for (int i = 0; i < cmd.numarCartiDorite; ++i) {
+            os << "-" << cmd.titluriDorite[i] << "\n";
+        }
+        os << "\n";
+        return os;
+    }
+};
+
+class Bookstore {
+private:
+    std::string numeLibrarie;
+    float buget;
+    Raft raftCarti;
+
+public:
+   explicit Bookstore(const std::string& nume_librarie = "Carturesti", float buget_librarie = 1000.0f)
+       : numeLibrarie{nume_librarie}, buget{buget_librarie} {
+
+   }
+
+    void aprovizioneaza(const Carte& c) {
+       raftCarti.adaugaCarte(c);
+   }
+
+    void vindeCarte(const std::string& titluCautat, int cantitate_dorita) {
+       Carte* carteGasita = raftCarti.gasesteCarte(titluCautat);
+       if (carteGasita != nullptr ) {
+           if (carteGasita->getStoc() >= cantitate_dorita) {
+               carteGasita->scadeStoc(cantitate_dorita);
+               float valoareVanzare = carteGasita->getPret() * cantitate_dorita;
+               buget += valoareVanzare;
+               std::cout << "S-au vandut" << cantitate_dorita << "x'"<< titluCautat<<"'<< | Incasat "<< valoareVanzare << "Ron \n" ;
+           }
+           else {
+               std::cout << "Stoc insuficient";
+           }
+       }
+       else {
+           std::cout << "Cartea nu a fost gasita pe raft";
+       }
+   }
+
+    void proceseazaComanda(Comanda& cmd) {
+        std::cout << "\n";
+        std::cout << "[NOUA COMANDA] Client: " << cmd.getClient().getNume()
+                  << " | Buget initial: " << cmd.getClient().getPortofel() << " RON\n";
+        std::cout << "Carti solicitate (" << cmd.getNumarCartiDorite() << "):\n";
+
+        float totalDePlata = 0.0f;
+
+        // 1. Trecem prin cărțile dorite și simulăm "scanarea" lor la casă
+        for (int i = 0; i < cmd.getNumarCartiDorite(); ++i) {
+            const std::string& titlu = cmd.getTitluDorit(i);
+            Carte* carteGasita = raftCarti.gasesteCarte(titlu);
+
+            if (carteGasita != nullptr && carteGasita->getStoc() > 0) {
+                totalDePlata += carteGasita->getPret();
+                std::cout << "  +" << titlu << " (" << carteGasita->getPret() << " RON)\n";
+            } else {
+                std::cout << "  - [Indisponibil] " << titlu << " (Lipsa stoc sau nu exista)\n";
+            }
+        }
+
+        std::cout << "Total de plata calculat: " << totalDePlata << " RON\n";
+
+        if (totalDePlata == 0.0f) {
+            std::cout << "Tranzactie anulata. Nicio carte valabila in cos.\n";
+            std::cout << "\n";
+            return;
+        }
+
+        if (cmd.getClient().getPortofel() >= totalDePlata) {
+            // Tranzacția reușește
+            cmd.getClient().plateste(totalDePlata);
+            buget += totalDePlata;
+
+            for (int i = 0; i < cmd.getNumarCartiDorite(); ++i) {
+                Carte* carteGasita = raftCarti.gasesteCarte(cmd.getTitluDorit(i));
+                if (carteGasita != nullptr && carteGasita->getStoc() > 0) {
+                    carteGasita->scadeStoc(1);
+                }
+            }
+            std::cout << "Tranzactie REUSITA! Portofel ramas: "
+                      << cmd.getClient().getPortofel() << " RON.\n";
+        } else {
+            // Tranzacția eșuează
+            std::cout << "Tranzactie ANULATA! Fonduri insuficiente.\n";
+        }
+        std::cout << "\n";
+    }
+
+    void campanieReduceri(const std::string& numeAutor, float procent) {
+       std::cout <<"Reducere de "<< procent << "% pentru autorul" << numeAutor << "\n";
+       raftCarti.aplicaReducereAutor(numeAutor, procent);
+   }
+
+    friend std::ostream& operator<<(std::ostream& os, const Bookstore& b) {
+       os << " BOOKSTORE: " << b.numeLibrarie << " | Buget Cash: " << b.buget << " RON\n";
+       os << "Inventar curent pe raft:\n";
+       os << b.raftCarti;
+       os << "Valoare totala marfa pe raft: " << b.raftCarti.calculeazaValoare() << " RON\n";
+       return os;
+   }
+};
+
+
+    int main() {
+        //voi adauga mai tarziu sa fie librarie it-stilor, cu carti legate de coding
+    Bookstore magazin("Libraria X", 500.0f);
+    Autor autor1("Mihai Eminescu", 1850);
+    Autor autor2("J.K. Rowling", 1965);
+
+    Carte carte1("Poezii", autor1, 40.0f, 10);
+    Carte carte2("Harry Potter vol. 1", autor2, 50.0f, 5);
+    Carte carte3("Harry Potter vol. 2", autor2, 60.0f, 2);
+
+    magazin.aprovizioneaza(carte1);
+    magazin.aprovizioneaza(carte2);
+    magazin.aprovizioneaza(carte3);
+
+    std::cout << "\nSTAREA INITIALA A MAGAZINULUI\n";
+    std::cout << magazin;
+    std::cout << "\nACTIVITATI DE DIMINEATA \n";
+    magazin.campanieReduceri("J.K. Rowling", 10.0f);
+    std::cout << "Un client achizitioneaza(nu are cont, este in trecere)\n";
+    magazin.vindeCarte("Poezii", 1);
+
+    std::cout << "Incep comenzile... \n";
+
+    for (int i = 0; i < 3; ++i) {
+        Client clientCurent;
+        std::cin >> clientCurent;
+        Comanda comandaCurenta(clientCurent);
+        std::cin >> comandaCurenta;
+
+        magazin.proceseazaComanda(comandaCurenta);
+    }
+
+    std::cout << "\nSTAREA LA FINALUL ZILEI\n";
+    std::cout << magazin;
+
     return 0;
 }
