@@ -1,5 +1,6 @@
 #include <iostream>
 #include <utility>
+#include <string>
 // #include <vector>
 // #include <array>
 // #include "include/Example.h"
@@ -15,8 +16,8 @@ public:
         // std::cout << "Constrcutor de intializare Autor (" << nume <<") \n";
     }
 
-     const std::string& getNume() const {return nume; }
-     int getAnNastere() const {return anNastere; }
+     [[nodiscard]] const std::string& getNume() const {return nume; }
+     [[nodiscard]] int getAnNastere() const {return anNastere; }
 
     friend std::ostream& operator<<(std:: ostream& os, const Autor& a) {
         os << a.nume << " (an. " << a.anNastere << ")";
@@ -33,18 +34,18 @@ private:
 
 public:
     explicit Carte(std::string  titlu_carte = "Fara titlu",
-        const Autor& autor_carte = Autor{},
+        Autor  autor_carte = Autor{},
         float pret_carte = 0.0f,
         int stoc_carte = 0)
-            :titlu{std::move(titlu_carte)}, autor {autor_carte}, pret{pret_carte}, stoc{stoc_carte}{
+            :titlu{std::move(titlu_carte)}, autor {std::move(autor_carte)}, pret{pret_carte}, stoc{stoc_carte}{
         // std::cout << "Constrcutor de Carte (" << titlu << ") \n";
     }
 
 
-    const std::string& getTitlu() const {return titlu; }
-    const Autor& getAutor() const {return autor; }
-    float getPret() const {return pret; }
-    int getStoc() const {return stoc; }
+    [[nodiscard]] const std::string& getTitlu() const {return titlu; }
+    [[nodiscard]] const Autor& getAutor() const {return autor; }
+    [[nodiscard]] float getPret() const {return pret; }
+    [[nodiscard]] int getStoc() const {return stoc; }
 
     void scadeStoc(int cantitate) {
         if (stoc >= cantitate) {
@@ -118,7 +119,7 @@ public:
         }
     }
 
-    float calculeazaValoare() const {
+    [[nodiscard]] float calculeazaValoare() const {
         float total = 0.0f;
         for (int i = 0; i < numarCarti; ++i) {
             total += (carti[i].getPret() * carti[i].getStoc());
@@ -149,8 +150,8 @@ public:
     explicit Client(const std::string& nume_client = "Necunoscut", std::string email_client = "-", float portofel_client = 0.0f) :
     nume{nume_client}, email{std::move(email_client)}, portofel{portofel_client}{}
 
-    std::string getNume() const {return nume;}
-    float getPortofel() const {return portofel;}
+    [[nodiscard]] std::string getNume() const {return nume;}
+    [[nodiscard]] float getPortofel() const {return portofel;}
 
     void plateste(float suma) {
         if (portofel > suma) {
@@ -186,8 +187,8 @@ public:
         : client{client_curent}, numarCartiDorite{0} {}
 
     Client& getClient() {return client;}
-    int getNumarCartiDorite() const {return numarCartiDorite;}
-    const std::string& getTitluDorit(int index) const {return titluriDorite[index];}
+    [[nodiscard]] int getNumarCartiDorite() const {return numarCartiDorite;}
+    [[nodiscard]] const std::string& getTitluDorit(int index) const {return titluriDorite[index];}
 
     friend std::istream& operator>>(std::istream& is, Comanda& cmd) {
         // std::cout <<"Numar carti dorite de client (Max 10): ";
