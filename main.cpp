@@ -150,7 +150,7 @@ public:
     explicit Client(const std::string& nume_client = "Necunoscut", std::string email_client = "-", float portofel_client = 0.0f) :
     nume{nume_client}, email{std::move(email_client)}, portofel{portofel_client}{}
 
-    [[nodiscard]] const std::string getNume() const {return nume;}
+    [[nodiscard]] const std::string& getNume() const {return nume;}
     [[nodiscard]] float getPortofel() const {return portofel;}
 
     void plateste(float suma) {
