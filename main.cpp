@@ -17,7 +17,7 @@ public:
     }
 
      [[nodiscard]] const std::string& getNume() const {return nume; }
-     [[nodiscard]] int getAnNastere() const {return anNastere; }
+     // [[nodiscard]] int getAnNastere() const {return anNastere; }
 
     friend std::ostream& operator<<(std:: ostream& os, const Autor& a) {
         os << a.nume << " (an. " << a.anNastere << ")";
@@ -150,7 +150,7 @@ public:
     explicit Client(const std::string& nume_client = "Necunoscut", std::string email_client = "-", float portofel_client = 0.0f) :
     nume{nume_client}, email{std::move(email_client)}, portofel{portofel_client}{}
 
-    [[nodiscard]] std::string getNume() const {return nume;}
+    [[nodiscard]] const std::string getNume() const {return nume;}
     [[nodiscard]] float getPortofel() const {return portofel;}
 
     void plateste(float suma) {
@@ -261,7 +261,7 @@ public:
         // 1. Trecem prin cărțile dorite și simulăm "scanarea" lor la casă
         for (int i = 0; i < cmd.getNumarCartiDorite(); ++i) {
             const std::string& titlu = cmd.getTitluDorit(i);
-            Carte* carteGasita = raftCarti.gasesteCarte(titlu);
+            const Carte* carteGasita = raftCarti.gasesteCarte(titlu);
 
             if (carteGasita != nullptr && carteGasita->getStoc() > 0) {
                 totalDePlata += carteGasita->getPret();
