@@ -320,7 +320,7 @@ public:
    }
 
     void campanieReduceri(const std::string& numeAutor, float procent) {
-       std::cout <<"Reducere de "<< procent << "% pentru autorul " << numeAutor << ".\n";
+       std::cout <<"\n Reducere de "<< procent << "% pentru autorul " << numeAutor << ".\n";
        raftCarti.aplicaReducereAutor(numeAutor, procent);
    }
 
@@ -363,7 +363,8 @@ public:
 
         std::cout <<"\n STAREA INITIALA A MAGAZINULUI\n";
         std::cout << magazin;
-        std::cout <<"Un client random(fara cont) intra si cumpara o carte\n";
+        magazin.campanieReduceri("Andrew Hunt", 30.0f);
+        std::cout <<"\nUn client random(fara cont) intra si cumpara o carte\n";
         magazin.vindeCarte("Clean Code", 1);
         magazin.inregistreazaClient();
 
