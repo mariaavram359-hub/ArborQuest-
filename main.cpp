@@ -16,7 +16,7 @@ public:
         // std::cout << "Constrcutor de intializare Autor (" << nume <<") \n";
     }
 
-     [[nodiscard]] const std::string& getNume() const {return nume; }
+     const std::string& getNume() const {return nume; }
      // [[nodiscard]] int getAnNastere() const {return anNastere; }
 
     friend std::ostream& operator<<(std:: ostream& os, const Autor& a) {
@@ -76,6 +76,7 @@ public:
     }
 
     ~Raft() = default;
+
     Raft(const Raft& alt_raft) : numarCarti{alt_raft.numarCarti} {
         for (int i = 0; i < numarCarti; ++i) {
             carti[i] = alt_raft.carti[i];
@@ -98,7 +99,7 @@ public:
             numarCarti++;
         }
         else {
-            std::cout << "Raftul este plin!";
+            std::cout << "[Eroare] Raftul este plin! \n";
         }
     }
 
@@ -129,7 +130,7 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const Raft& r) {
         if (r.numarCarti == 0) {
-            os << "Raftul este gol";
+            os << "Raftul este gol \n";
         }
         else {
             for (int i = 0; i < r.numarCarti; ++i) {
@@ -150,8 +151,8 @@ public:
     explicit Client(const std::string& nume_client = "Necunoscut", std::string email_client = "-", float portofel_client = 0.0f) :
     nume{nume_client}, email{std::move(email_client)}, portofel{portofel_client}{}
 
-    [[nodiscard]] const std::string& getNume() const {return nume;}
-    [[nodiscard]] float getPortofel() const {return portofel;}
+    const std::string& getNume() const {return nume;}
+    float getPortofel() const {return portofel;}
 
     void plateste(float suma) {
         if (portofel > suma) {
@@ -178,17 +179,23 @@ public:
 
 class Comanda{
 private:
+    static int contorComenzi;
+    int idComanda;
     Client client;
     std::string titluriDorite[10];
     int numarCartiDorite;
 
 public:
     explicit Comanda(const Client &client_curent = Client{})
-        : client{client_curent}, numarCartiDorite{0} {}
+        : client{client_curent}, numarCartiDorite{0} {
+        contorComenzi++;
+        idComanda = contorComenzi;
+    }
 
     Client& getClient() {return client;}
-    [[nodiscard]] int getNumarCartiDorite() const {return numarCartiDorite;}
-    [[nodiscard]] const std::string& getTitluDorit(int index) const {return titluriDorite[index];}
+    int getNumarCartiDorite() const {return numarCartiDorite;}
+    const std::string& getTitluDorit(int index) const {return titluriDorite[index];}
+    int getId() const{ return idComanda; }
 
     friend std::istream& operator>>(std::istream& is, Comanda& cmd) {
         // std::cout <<"Numar carti dorite de client (Max 10): ";
@@ -228,8 +235,13 @@ public:
 
    }
 
-    void aprovizioneaza(const Carte& c) {
+   //  void aprovizioneaza(const Carte& c) {
+   //     raftCarti.adaugaCarte(c);
+   // }
+
+    Bookstore& operator+=(const Carte& c) {
        raftCarti.adaugaCarte(c);
+       return *this;
    }
 
     void vindeCarte(const std::string& titluCautat, int cantitate_dorita) {
@@ -239,35 +251,34 @@ public:
                carteGasita->scadeStoc(cantitate_dorita);
                float valoareVanzare = carteGasita->getPret() * cantitate_dorita;
                buget += valoareVanzare;
-               std::cout << "S-au vandut" << cantitate_dorita << "x'"<< titluCautat<<"'<< | Incasat "<< valoareVanzare << "Ron \n" ;
+               std::cout << "S-au vandut " << cantitate_dorita << "x '"<< titluCautat<<"' | Incasat "<< valoareVanzare << " RON \n" ;
            }
            else {
-               std::cout << "Stoc insuficient";
+               std::cout << "Stoc insuficient \n";
            }
        }
        else {
-           std::cout << "Cartea nu a fost gasita pe raft";
+           std::cout << "Cartea nu a fost gasita pe raft \n";
        }
    }
 
     void proceseazaComanda(Comanda& cmd) {
-        std::cout << "\n";
-        std::cout << "[NOUA COMANDA] Client: " << cmd.getClient().getNume()
+        // std::cout << "\n";
+        std::cout << "[NOUA COMANDA #" << cmd.getId() << "] Client: " << cmd.getClient().getNume()
                   << " | Buget initial: " << cmd.getClient().getPortofel() << " RON\n";
         std::cout << "Carti solicitate (" << cmd.getNumarCartiDorite() << "):\n";
 
         float totalDePlata = 0.0f;
 
-        // 1. Trecem prin cărțile dorite și simulăm "scanarea" lor la casă
         for (int i = 0; i < cmd.getNumarCartiDorite(); ++i) {
             const std::string& titlu = cmd.getTitluDorit(i);
             const Carte* carteGasita = raftCarti.gasesteCarte(titlu);
 
             if (carteGasita != nullptr && carteGasita->getStoc() > 0) {
                 totalDePlata += carteGasita->getPret();
-                std::cout << "  +" << titlu << " (" << carteGasita->getPret() << " RON)\n";
+                std::cout << "  + " << titlu << " (" << carteGasita->getPret() << " RON)\n";
             } else {
-                std::cout << "  - [Indisponibil] " << titlu << " (Lipsa stoc sau nu exista)\n";
+                std::cout << "  -[Indisponibil] " << titlu << " (Lipsa stoc sau nu exista)\n";
             }
         }
 
@@ -280,7 +291,6 @@ public:
         }
 
         if (cmd.getClient().getPortofel() >= totalDePlata) {
-            // Tranzacția reușește
             cmd.getClient().plateste(totalDePlata);
             buget += totalDePlata;
 
@@ -293,14 +303,24 @@ public:
             std::cout << "Tranzactie REUSITA! Portofel ramas: "
                       << cmd.getClient().getPortofel() << " RON.\n";
         } else {
-            // Tranzacția eșuează
             std::cout << "Tranzactie ANULATA! Fonduri insuficiente.\n";
         }
         std::cout << "\n";
     }
 
+    void inregistreazaClient() {
+       std::cout <<"\n Procesare Comenzi \n";
+       Client clientCurent;
+       while (std::cin>>clientCurent) {
+           Comanda comandaCurenta(clientCurent);
+           std::cin>> comandaCurenta;
+
+           proceseazaComanda(comandaCurenta);
+       }
+   }
+
     void campanieReduceri(const std::string& numeAutor, float procent) {
-       std::cout <<"Reducere de "<< procent << "% pentru autorul" << numeAutor << "\n";
+       std::cout <<"Reducere de "<< procent << "% pentru autorul " << numeAutor << ".\n";
        raftCarti.aplicaReducereAutor(numeAutor, procent);
    }
 
@@ -313,41 +333,50 @@ public:
    }
 };
 
+class BookstoreApp {
+private:
+    Autor autori[5] {
+        Autor("Robert Martin", 1952),
+        Autor("Andrew Hunt", 1968 ),
+        Autor("Martin Fowler", 1963),
+        Autor("Martin Kleppmann", 1998),
+        Autor("John Ousterhout", 1954)
+    };
 
-    int main() {
-        //voi adauga mai tarziu sa fie librarie it-stilor, cu carti legate de coding
-    Bookstore magazin("Libraria X", 500.0f);
-    Autor autor1("Mihai Eminescu", 1850);
-    Autor autor2("J.K. Rowling", 1965);
+    Carte carti[5] {
+        Carte("Clean Code", autori[0], 40.0f, 10),
+         Carte("The Pragmatic Programmer", autori[1], 50.0f, 5),
+         Carte("Refactoring", autori[1], 60.0f, 2),
+        Carte("Designing Data-Intensive Applications", autori[0], 45.0f, 8),
+        Carte("A Philosophy of Software Design", autori[0], 60.0f, 10)
+    };
 
-    Carte carte1("Poezii", autor1, 40.0f, 10);
-    Carte carte2("Harry Potter vol. 1", autor2, 50.0f, 5);
-    Carte carte3("Harry Potter vol. 2", autor2, 60.0f, 2);
+    Bookstore magazin{"Coding Bookstore", 500.0f};
 
-    magazin.aprovizioneaza(carte1);
-    magazin.aprovizioneaza(carte2);
-    magazin.aprovizioneaza(carte3);
+public:
+    void init() {
+        std::cout << "Pornire sistem gestiune\n";
 
-    std::cout << "\nSTAREA INITIALA A MAGAZINULUI\n";
-    std::cout << magazin;
-    std::cout << "\nACTIVITATI DE DIMINEATA \n";
-    magazin.campanieReduceri("J.K. Rowling", 10.0f);
-    std::cout << "Un client achizitioneaza(nu are cont, este in trecere)\n";
-    magazin.vindeCarte("Poezii", 1);
+        for (int i = 0; i < 5; ++i) {
+            magazin += carti[i];
+        }
 
-    std::cout << "Incep comenzile... \n";
+        std::cout <<"\n STAREA INITIALA A MAGAZINULUI\n";
+        std::cout << magazin;
+        std::cout <<"Un client random(fara cont) intra si cumpara o carte\n";
+        magazin.vindeCarte("Clean Code", 1);
+        magazin.inregistreazaClient();
 
-    for (int i = 0; i < 3; ++i) {
-        Client clientCurent;
-        std::cin >> clientCurent;
-        Comanda comandaCurenta(clientCurent);
-        std::cin >> comandaCurenta;
-
-        magazin.proceseazaComanda(comandaCurenta);
+        std::cout <<"\n STAREA LA FINALUL ZILEI\n";
+        std::cout << magazin;
     }
+};
 
-    std::cout << "\nSTAREA LA FINALUL ZILEI\n";
-    std::cout << magazin;
+int Comanda::contorComenzi = 0;
+
+int main() {
+    BookstoreApp app;
+    app.init();
 
     return 0;
 }

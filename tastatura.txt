@@ -1,17 +1,17 @@
 Popescu Ion
 ion@email.com
-150.0
+200.0
 2
-Harry Potter vol. 1
-Poezii
+Clean Code
+The Pragmatic Programmer
 Ionescu Maria
 maria@email.com
-20.0
+30.0
 1
-Harry Potter vol. 2
+Refactoring
 Gheorghe Vasile
 vasile@email.com
 500.0
 2
-Carte Inexistenta
-Poezii
+Algoritmi Inexistenti
+A Philosophy of Software Design
