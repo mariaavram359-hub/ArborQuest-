@@ -20,7 +20,7 @@ public:
     [[nodiscard]] int getNumar() const { return numar; }
 
     friend std::ostream& operator<<(std::ostream& os, const Adresa& a) {
-        os << "Str. " << a.strada << " nr. " << a.numar << ", " << a.oras;
+        os << "Str. " << a.getStrada() << " nr. " << a.getNumar() << ", " << a.getOras();
         return os;
     }
 };
@@ -44,7 +44,7 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Angajat& a) {
-        os << " - " << a.nume << " (" << a.functie << ") | Salariu: " << a.salariu << " RON";
+        os << " - " << a.getNume() << " (" << a.getFunctie() << ") | Salariu: " << a.getSalariu() << " RON";
         return os;
     }
 };
@@ -81,8 +81,8 @@ public:
     const std::string& getNume() const {return nume; }
     const std::string& getNivelDificultate() const {return nivelDificultate; }
 
-    friend std::ostream& operator<<(std:: ostream& os, const Categorie& c) {
-        os << "[" << c.nume << "| Dificultate: " << c.nivelDificultate << "]";
+    friend std::ostream& operator<<(std::ostream& os, const Categorie& c) {
+        os << "[" << c.getNume() << " | Dificultate: " << c.getNivelDificultate() << "]";
         return os;
     }
 };
@@ -371,6 +371,12 @@ public:
        }
        std::cout << "========================\n";
    }
+    void recompenseazaEchipa(float procent) {
+       std::cout << "\n[Sistem] Marire de salariu de " << procent << "% pentru toata echipa!\n";
+       for (int i = 0; i < numarAngajati; ++i) {
+           angajati[i].maresteSalariu(procent);
+       }
+   }
 
     void vindeCarte(const std::string& titluCautat, int cantitate_dorita) {
        Carte* carteGasita = raftCarti.gasesteCarte(titluCautat);
@@ -514,6 +520,9 @@ public:
         magazin.angajeaza(Angajat("Vasile Ion", "Manipulant Marfa", 3000.0f));
 
         magazin.afiseazaEchipa();
+        magazin.recompenseazaEchipa(10.0f);
+        magazin.afiseazaEchipa();
+
         std::cout <<"\n STAREA INITIALA A MAGAZINULUI\n";
         std::cout << magazin;
         magazin.campanieReduceri("Andrew Hunt", 30.0f);
