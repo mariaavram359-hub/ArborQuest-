@@ -1,7 +1,7 @@
 
-# Coders Bookstore
+# Coding Bookstore
 
-Coders Bookstore este o aplicație consolă care simulează operațiunile zilnice ale unei librării destinate programatorilor incepatori. Aplicația gestionează automat întregul flux al magazinului: de la aprovizionarea rafturilor, aplicarea de reduceri și managementul echipei de angajați, până la încasarea plăților, procesarea comenzilor din partea clienților și colectarea recenziilor.
+Coding Bookstore este o aplicație consolă care simulează operațiunile zilnice ale unei librării destinate programatorilor incepatori. Aplicația gestionează automat întregul flux al magazinului: de la aprovizionarea rafturilor, aplicarea de reduceri și managementul echipei de angajați, până la încasarea plăților, procesarea comenzilor din partea clienților și colectarea recenziilor.
 
 ### Folosiți template-ul corespunzător grupei voastre!
 
