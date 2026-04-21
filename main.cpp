@@ -184,8 +184,13 @@ public:
             std::cout << "[Eroare] Raftul este plin!\n";
         }
     }
-
     Carte* gasesteCarte(const std::string& titluCautat) {
+        for (auto& carte : carti) {
+            if (carte.getTitlu() == titluCautat) return &carte;
+        }
+        return nullptr;
+    }
+    const Carte *gasesteCarte(const std::string &titluCautat) const {
         for (const auto& carte : carti) {
             if (carte.getTitlu() == titluCautat) {
                 return &carte;
@@ -195,7 +200,7 @@ public:
     }
 
     void aplicaReducereAutor(const std::string& numeAutor, float procent) {
-        for (const auto& carte : carti) {
+        for (auto& carte : carti) {
             if (carte.getAutor().getNume() == numeAutor) {
                 carte.aplicaReducere(procent);
             }
@@ -216,7 +221,7 @@ public:
         }
         else {
             for (size_t i = 0; i < r.carti.size(); ++i) {
-                os << "  " << i + 1 <<". "<<r.carti[i] << "\n";
+                os << "  " << i + 1 <<". " << r.carti[i] << "\n";
             }
         }
         return os;
@@ -274,7 +279,7 @@ public:
     }
 
     Client& getClient() {return client;}
-    int getNumarCartiDorite() const {return titluriDorite.size();}
+    int getNumarCartiDorite() const {return static_cast<int>(titluriDorite.size());}
     const std::string& getTitluDorit(int index) const {return titluriDorite[index];}
     int getId() const{ return idComanda; }
 
@@ -359,7 +364,7 @@ public:
    }
 
     void vindeCarte(const std::string& titluCautat, int cantitate_dorita) {
-       Carte* carteGasita = raftCarti.gasesteCarte(titluCautat);
+       Carte *carteGasita = raftCarti.gasesteCarte(titluCautat);
        if (carteGasita != nullptr ) {
            if (carteGasita->getStoc() >= cantitate_dorita) {
                carteGasita->scadeStoc(cantitate_dorita);
@@ -380,7 +385,7 @@ public:
    }
 
     void primesteRecenzie(const std::string& titlu, const Recenzie& r) {
-       Carte* carteGasita = raftCarti.gasesteCarte(titlu);
+        Carte *carteGasita = raftCarti.gasesteCarte(titlu);
        if (carteGasita != nullptr) {
            carteGasita->adaugaRecenzie(r);
            std::cout << " [Recenzie] " << r << " (pentru '" << titlu << "')\n";
@@ -430,7 +435,7 @@ public:
             };
 
             for (int i = 0; i < cmd.getNumarCartiDorite(); ++i) {
-                Carte* carteGasita = raftCarti.gasesteCarte(cmd.getTitluDorit(i));
+                Carte *carteGasita = raftCarti.gasesteCarte(cmd.getTitluDorit(i));
                 if (carteGasita != nullptr && carteGasita->getStoc() > 0) {
                     carteGasita->scadeStoc(1);
                     Recenzie r = Client::scrieRecenzie(mesaje[i % 4], 5);
@@ -503,8 +508,8 @@ public:
     void init() {
         std::cout << "Pornire sistem gestiune\n\n";
 
-        for (const auto & i : carti) {
-            magazin += i;
+        for (const auto& carte :  carti) {
+            magazin += carte;
         }
         magazin.stabilesteLocatie(Adresa("Bucuresti", "Calea Victoriei", 45));
         magazin.angajeaza(Angajat("Popescu Andrei", "Manager", 5000.0f));
