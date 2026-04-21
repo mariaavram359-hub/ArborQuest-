@@ -186,7 +186,7 @@ public:
     }
 
     Carte* gasesteCarte(const std::string& titluCautat) {
-        for (auto& carte : carti) {
+        for (const auto& carte : carti) {
             if (carte.getTitlu() == titluCautat) {
                 return &carte;
             }
@@ -195,7 +195,7 @@ public:
     }
 
     void aplicaReducereAutor(const std::string& numeAutor, float procent) {
-        for (auto& carte : carti) {
+        for (const auto& carte : carti) {
             if (carte.getAutor().getNume() == numeAutor) {
                 carte.aplicaReducere(procent);
             }
@@ -204,7 +204,7 @@ public:
 
     [[nodiscard]] float calculeazaValoare() const {
         float total = 0.0f;
-        for (auto& carte : carti) {
+        for (const auto& carte : carti) {
             total += (carte.getPret() * carte.getStoc());
         }
         return total;
